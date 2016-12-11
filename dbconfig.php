@@ -2,7 +2,7 @@
 session_start();
 
 try{
-	$con = new PDO('mysql:host=localhost;dbname=gudang', 'root', '', array(PDO::ATTR_PERSISTENT => true));
+	$con = new PDO('mysql:host=localhost;dbname=gudang', 'root', 'cdn2008@indosat.co.id', array(PDO::ATTR_PERSISTENT => true));
 }
 
 catch(PDOException $e){

@@ -1,18 +1,17 @@
 <?php
 include_once 'dbconfig.php';
+
 if(isset($_POST['add'])){
-	for($i=0; $i<count($_POST['nama']); $i++){
-		if($lib->pembelian($_POST['nama'][$i], $_POST['qty'][$i])){
+	for($i=0; $i<count($_POST['id']); $i++){
+		if($lib->pembelian($_POST['jenis'], $_POST['id'][$i], $_POST['nama'][$i], $_POST['qty'][$i])){
 			header("Location: pembelian.php?success");
 		}
 		else{
 			header("Location: pembelian.php?failure");
-			break;
 		}
 	}
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,51 +41,69 @@ if(isset($_POST['add'])){
 	}
 	?>
 <form id="myForm" method="post">
-	<input type="reset" name="reset" onclick="reset()" value="resset">
+	<input type="reset" name="reset" onclick="reset()" value="resset"><br>
+	<input type="radio" name="jenis" value="plus" checked="true">Tambah Stok<br>
+	<input type="radio" name="jenis" value="minus">Kurang Stok<br>
 		<table class='table table-bordered' id = 'myTable'>
 			<thead>
-				<tr>	
+				<tr>		
+					<th>No.</th>
 					<th>ID Barang</th>
 					<th>Nama Barang</th>
 					<th>Qty</th>
-					<!-- <th>HPP</th>
-					<th>Disc(%)</th>
-					<th>Total</th> -->
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>1.</td>
+					<td>
+						<input type="text" name="id[]" class="id">
+						<input type="button" name="lov" onclick="popUp('lov_barang', 'id');" value="?">
+					</td>
 					<td><input type="text" name="nama[]" class="nama"></td>
-					<td><input type="text" name="qty[]" class="qty" onkeypress="inputEnter(event)"></td>
+					<td><input type="text" name="qty[]" class="qty" onkeypress="inputEnter(event);"></td>
 				</tr>
 			</tbody>
-		</table>
-		<script type="text/javascript">
-			function reset(){
-				var nama = document.getElementById('myForm').reset();
+		</table>	
+	<input class="btn-primary btn" type="submit" name="add" value="add" id="tambah">
+	
+	<script type="text/javascript">
+		function popUp(lov, id){
+			//$url = $dir + 'lov.php?lov=' + $lov + '&id=' + $id + '&from=0';
+			w = window.open('lov.php', "r");
+			if (w.opener == null) 
+				w.opener = self;
+			w.focus();
 			}
 
-			function inputEnter(e){
-				//if(e.which == 13 || e.keycode == 13){
-					newRow();
-				//}
-			}
 
-			function newRow(){
-				var table = document.getElementById('myTable'),
-					tr_count = table.rows.length,
-					x = document.getElementsByClassName('qty')[tr_count-2];
-				if (document.activeElement === x){
-					var row = table.insertRow(tr_count),
-						id = row.insertCell(0),
-						nama = row.insertCell(1),
-						qty = row.insertCell(2);
-					id.innerHTML = tr_count + ".";
-					nama.innerHTML = "<td><input type='text' name='nama[]' class='nama'></td>";
-					qty.innerHTML = "<td><input type='text' name='qty[]' class='qty' onkeypress='inputEnter(event)'></td>";
-				}
+		function reset(){
+			var nama = document.getElementById('myForm').reset();
+		}
+
+		function inputEnter(e){
+			//if(e.which==13||e.keycode=13){
+				newRow();
+			//}
+		}
+
+		function newRow(){
+			var table = document.getElementById('myTable'),
+				tr_count = table.rows.length,
+				x = document.getElementsByClassName('qty')[tr_count-2];
+			if (document.activeElement === x){
+				var row = table.insertRow(tr_count),
+					no = row.insertCell(0),
+					id = row.insertCell(1),
+					nama = row.insertCell(2),
+					qty = row.insertCell(3);
+				no.innerHTML = "<td>"+tr_count+"."+"</td>";
+				id.innerHTML = "<input type='text' name='id[]' class='id'>";
+				id.innerHTML = id.innerHTML + "<input type='button' name='lov' onclick=\"popUp('lov_barang', 'id')\" value='?'>";
+				nama.innerHTML = "<td><input type='text' name='nama[]' class='nama'></td>";
+				qty.innerHTML = "<td><input type='text' name='qty[]' class='qty' onkeypress='inputEnter(event)'></td>";
 			}
+		}
 
 			// function addRow(){
 			// 	var template = document.querySelector('#rowTemplate'),
@@ -98,7 +115,7 @@ if(isset($_POST['add'])){
 			// 	var clone = document.importNode(template.content, true);
 			//   	tbody.appendChild(clone);
 			// }
-		</script>
+	</script>
 		<!-- <template id="rowTemplate">
 			<tr>
 				<td></td>
@@ -106,7 +123,6 @@ if(isset($_POST['add'])){
 				<td><input type="number" name="qty"></td>
 			</tr>
 		</template> -->
-<button class="btn-primary btn" type="submit" name="add">ADD</button>
 </form>
 <script src="bootstrap/js/bootstrap.min.js"></script>
 </body>
